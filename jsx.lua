@@ -183,12 +183,14 @@ jsx = lpeg.P{
    tag = lpeg.R"az" * lpeg.V"identifier_char"^0;
    component = lpeg.R"AZ" * lpeg.V"identifier_char"^0;
    identifier = (lpeg.V"identifier_char" - lpeg.S"09") * lpeg.V"identifier_char"^0;
-   js = 1 - lpeg.S"{}" + lpeg.V"balanced";
-   balanced = "{" * lpeg.V"js"^0 * "}";
+   js = lpeg.V"element"
+      + lpeg.C(1 - lpeg.S"{}")
+      + lpeg.V"balanced";
+   balanced = lpeg.C"{" * lpeg.V"js"^0 * lpeg.C"}";
    attribute = lpeg.Ct(((lpeg.V"identifier_char" + "-")^0 / '"%0"')
       * (lpeg.P"=" / ": ")
       * (lpeg.C('"' * ((1 - lpeg.P'"') + '\\"')^0 * '"')
-         + "{" * (lpeg.V"js"^0 / "(%0)") * "}")) / table.concat;
+         + (lpeg.P"{" / "(") * lpeg.V"js"^0 * (lpeg.P"}" / ")"))) / table.concat;
    whitespace = lpeg.S" \r\n\t";
    element = lpeg.P"<" / "React.createElement("
       * lpeg.V"whitespace"^0
@@ -221,7 +223,7 @@ jsx = lpeg.P{
          + lpeg.V"letter")^1
       * lpeg.Cc'"';
    child = lpeg.V"element"
-      + "{" * lpeg.C(lpeg.V"js"^1) * "}"
+      + "{" * lpeg.V"js"^1 * "}"
       + lpeg.Ct(lpeg.V"word") / table.concat;
    children = (lpeg.V"whitespace"^1 + lpeg.Cc", " * lpeg.V"child")^0;
 }
