@@ -180,8 +180,8 @@ local entities = {
 jsx = lpeg.P{
    lpeg.Ct((lpeg.V"element" + lpeg.C(1))^0) / table.concat;
    identifier_char = lpeg.R("az", "AZ", "09") + "_";
-   tag = lpeg.R"az" * lpeg.V"identifier_char"^0;
-   component = lpeg.R"AZ" * lpeg.V"identifier_char"^0;
+   html = lpeg.R"az" * lpeg.V"identifier_char"^0;
+   tag = lpeg.R("az", "AZ") * (lpeg.V"identifier_char" + ".")^0;
    identifier = (lpeg.V"identifier_char" - lpeg.S"09") * lpeg.V"identifier_char"^0;
    js = lpeg.V"element"
       + lpeg.C(1 - lpeg.S"{}")
@@ -194,7 +194,7 @@ jsx = lpeg.P{
    whitespace = lpeg.S" \r\n\t";
    element = lpeg.P"<" / "React.createElement("
       * lpeg.V"whitespace"^0
-      * ((lpeg.V"tag" / '"%0"' + lpeg.C(lpeg.V"component"))
+      * ((lpeg.V"html" / '"%0"' + lpeg.C(lpeg.V"tag"))
          * lpeg.Cc", "
          * lpeg.V"whitespace"^0
          * (lpeg.Cc"{" * lpeg.Cf(lpeg.V"attribute"
@@ -206,7 +206,7 @@ jsx = lpeg.P{
             * lpeg.V"children"
             * "</"
             * lpeg.V"whitespace"^0
-            * (lpeg.V"tag" + lpeg.V"component")
+            * lpeg.V"tag"
             * lpeg.V"whitespace"^0
             * ">"
             + "/" * lpeg.V"whitespace"^0 * ">")
