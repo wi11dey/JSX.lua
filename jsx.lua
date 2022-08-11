@@ -190,7 +190,8 @@ jsx = lpeg.P{
    attribute = lpeg.Ct(((lpeg.V"identifier_char" + "-")^0 / '"%0"')
       * (lpeg.P"=" / ": ")
       * (lpeg.C('"' * ((1 - lpeg.P'"') + '\\"')^0 * '"')
-         + (lpeg.P"{" / "(") * lpeg.V"js"^0 * (lpeg.P"}" / ")"))) / table.concat;
+         + (lpeg.P"{" / "(") * lpeg.V"js"^0 * (lpeg.P"}" / ")"))) / table.concat
+      + "{" * lpeg.V"whitespace"^0 * lpeg.C"..." * lpeg.V"js"^1 * "}";
    whitespace = lpeg.S" \r\n\t";
    element = lpeg.P"<" / "React.createElement("
       * lpeg.V"whitespace"^0
