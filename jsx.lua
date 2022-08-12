@@ -179,15 +179,15 @@ local entities = {
 
 jsx = lpeg.P{
    lpeg.Ct((lpeg.V"element" + lpeg.C(1))^0) / table.concat;
-   identifier_char = lpeg.R("az", "AZ", "09") + "_";
-   html = lpeg.R"az" * lpeg.V"identifier_char"^0;
-   tag = lpeg.R("az", "AZ") * (lpeg.V"identifier_char" + ".")^0;
-   identifier = (lpeg.V"identifier_char" - lpeg.S"09") * lpeg.V"identifier_char"^0;
+   html_char = lpeg.R("az", "AZ", "09") + "_";
+   tag_char = lpeg.V"html_char" + ".";
+   html = lpeg.R"az" * lpeg.V"html_char"^0 * #(1 - lpeg.V"tag_char");
+   tag = lpeg.R("az", "AZ") * lpeg.V"tag_char"^0;
    js = lpeg.V"element"
       + lpeg.C(1 - lpeg.S"{}")
       + lpeg.V"balanced";
    balanced = lpeg.C"{" * lpeg.V"js"^0 * lpeg.C"}";
-   attribute = lpeg.Ct(((lpeg.V"identifier_char" + "-")^0 / '"%0"')
+   attribute = lpeg.Ct(((lpeg.V"html_char" + "-")^0 / '"%0"')
       * (lpeg.P"=" / ": ")
       * (lpeg.C('"' * ((1 - lpeg.P'"') + '\\"')^0 * '"')
          + (lpeg.P"{" / "(") * lpeg.V"js"^0 * (lpeg.P"}" / ")"))) / table.concat
