@@ -187,7 +187,7 @@ jsx = lpeg.P{
       + lpeg.C(1 - lpeg.S"{}")
       + lpeg.V"balanced";
    balanced = lpeg.C"{" * lpeg.V"js"^0 * lpeg.C"}";
-   attribute = lpeg.Ct(((lpeg.V"html_char" + "-")^0 / '"%0"')
+   attribute = lpeg.Ct(((lpeg.V"html_char" + "-")^1 / '"%0"')
       * ((lpeg.P"=" / ": ")
 	 * (lpeg.C('"' * ((1 - lpeg.P'"') + '\\"')^0 * '"')
 	    + (lpeg.P"{" / "(") * lpeg.V"js"^0 * (lpeg.P"}" / ")"))
